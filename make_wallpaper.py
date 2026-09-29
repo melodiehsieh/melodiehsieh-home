@@ -39,7 +39,7 @@ out = bliss.copy()
 # far to near so nearer cows overlap farther ones; positions are in 2000x1333 image pixels
 place(out, B, 120, 200, 865)     # small, far, left of the About window
 # (the standing brown/white cow C now lives inside the Dashboard window, next to the 'Personal project' pill)
-place(out, E, 92, 800, 1050)     # resting brown/white cow, further up the slope, above the standing one
+place(out, E, 92, 840, 1050)     # resting brown/white cow, further up the slope, above the standing one
 place(out, D, 104, 1872, 1015)   # resting black/white cow, in the grass to the right of the Dashboard window
 place(out, A, 340, 30, 1262)     # big front-on cow, bottom-left, nearest
 out.convert('RGB').resize((1600,1067), Image.LANCZOS).save('assets/hill-cows.jpg', quality=52, optimize=True)

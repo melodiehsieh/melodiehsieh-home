@@ -13,7 +13,9 @@ def li(items, cls=""):
 
 # ---- content (edit these) ----
 BIO = "Hi, I'm Melodie. I like working with data, and I build small projects to see what it says. This site collects the ones I'm happy to share."
-DESC = "Years of Apple Health data, parsed on my own machine into Parquet and charted in your browser with DuckDB. Pace by heart-rate zone, resting heart rate, VO2 max, steps and more, with no backend."
+DESC = ("Apple's Health and Activity apps don't show the stats I am curious about, so I built my own. "
+        "I exported 5.6 million lines of raw XML Health data, parsed it into Parquet, and charted pace on repeat routes, "
+        "pace by heart-rate zone, workout type distribution with custom categories, and gym PRs.")
 TAGS = ["Python", "DuckDB", "Parquet", "TypeScript", "Observable Plot"]
 NOW = ["Training for the next race and watching zone 2 pace drop.",
        "Learning more about DuckDB-WASM and static data sites.",
