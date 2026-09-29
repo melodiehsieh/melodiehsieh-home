@@ -17,7 +17,7 @@ Edit the page text (bio, "Now" list, skills, links) at the top of `build_homepag
 
 ## Still to fill in
 
-- Your portrait: add `dist/me.jpg`. The About window shows a silhouette until it exists.
+- Your portrait lives in `assets/me.jpg` (4:5 crop). Replace it to change the photo in the About window.
 - Contact email, LinkedIn URL and `/resume.pdf` are placeholders in `template.html`.
 - The project card links to `/health/`, so the dashboard needs to be served at that path.
 

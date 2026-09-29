@@ -28,6 +28,7 @@ thumb = ('<div class="shot"><img class="thumb" src="' + b64("assets/activity.jpg
 fills = {
     "%%WALLPAPER%%": b64("assets/hill-cows.jpg", "image/jpeg"),
     "%%AVATAR%%": b64("assets/cow-avatar.jpg", "image/jpeg"),
+    "%%ME%%": b64("assets/me.jpg", "image/jpeg"),
     "%%PCOW%%": b64("assets/cow-inline.png", "image/png"),
     "%%THUMB%%": thumb,
     "%%BIO%%": BIO, "%%DESC%%": DESC,
