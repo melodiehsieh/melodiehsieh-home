@@ -20,7 +20,7 @@ Edit the page text (bio, "Now" list, skills, links) at the top of `src/build_hom
 - Your portrait lives in `assets/me.jpg` (4:5 crop). Replace it to change the photo in the About window.
 - Contact email, LinkedIn, GitHub and the project links are set at the top of `src/build_homepage.py`.
 - The Résumé button opens `dist/Hsieh_Melodie.pdf`. Replace that file to update it.
-- The project card links to `https://melodiehsieh.com/health`, so the dashboard needs to be served at that path.
+- The project card links to `https://melodiehsieh.com/health/`, so the dashboard needs to be served at that path.
 
 ## Credits
 

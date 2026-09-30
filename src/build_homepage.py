@@ -30,7 +30,7 @@ PROFILE = "https://github.com/melodiehsieh"
 REPO = "https://github.com/melodiehsieh/apple-health-dashboard"
 LINKEDIN = "https://linkedin.com/in/melodiehsieh"
 RESUME = "Hsieh_Melodie.pdf"      # the PDF in dist/, served next to index.html
-PROJECT = "https://melodiehsieh.com/health"
+PROJECT = "https://melodiehsieh.com/health/"
 
 # Which cow opens which card: (cow letter in src/make_wallpaper.py, card key, label above the cow,
 #   mouth position as (x, y) fractions of the cow image, and which way the cow faces: "r" or "l")
