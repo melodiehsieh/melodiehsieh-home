@@ -1,25 +1,26 @@
 # melodiehsieh.com homepage
 
-A Windows XP-style desktop homepage for [melodiehsieh.com](https://melodiehsieh.com): draggable windows, a Start menu, a taskbar, and a herd of cows on a green hill. It links to the [Apple Health Dashboard](https://github.com/melodiehsieh/apple-health-dashboard).
+A homepage for [melodiehsieh.com](https://melodiehsieh.com) where the cows are the navigation: click a cow on the hill (it hops, says MOO! and moos out loud) to read About, Lately, the Personal Project, or how to say hi. A slider at the bottom moves the sky from day to sunset to night. It links to the [Apple Health Dashboard](https://github.com/melodiehsieh/apple-health-dashboard).
 
-The site is one static file, `dist/index.html`, with all images embedded. There is no backend and no JavaScript dependency.
+The site is one static file, `dist/index.html`, with all images embedded. There is no backend and no JavaScript dependency. Earlier design directions (Windows XP desktop, clouds and others) are kept as standalone pages in `mockups/`, which is local only.
 
 ## Build
 
 Needs Python 3 with Pillow (`pip install pillow`).
 
 ```bash
-python3 make_wallpaper.py   # cut-outs from assets/cows/ placed on assets/hill-base.jpg -> assets/hill-cows.jpg
-python3 build_homepage.py   # template.html + assets -> dist/index.html
+python3 src/make_wallpaper.py   # hill, one sprite per cow, and a sky mask -> assets/
+python3 src/build_homepage.py   # src/template.html + assets -> dist/index.html
 ```
 
-Edit the page text (bio, "Now" list, skills, links) at the top of `build_homepage.py`. Edit the layout and styling in `template.html`. Move a cow by changing its position in `make_wallpaper.py`.
+Edit the page text (bio, "Now" list, skills, links) at the top of `src/build_homepage.py`. Edit the layout and styling in `src/template.html`. Move a cow by changing its position in `src/make_wallpaper.py`; its clickable label follows automatically.
 
 ## Still to fill in
 
 - Your portrait lives in `assets/me.jpg` (4:5 crop). Replace it to change the photo in the About window.
-- Contact email, LinkedIn URL and `/resume.pdf` are placeholders in `template.html`.
-- The project card links to `/health/`, so the dashboard needs to be served at that path.
+- Contact email, LinkedIn, GitHub and the project links are set at the top of `src/build_homepage.py`.
+- The Résumé button opens `dist/Hsieh_Melodie.pdf`. Replace that file to update it.
+- The project card links to `https://melodiehsieh.com/health`, so the dashboard needs to be served at that path.
 
 ## Credits
 
@@ -31,3 +32,5 @@ Cow photos from Wikimedia Commons, licensed [CC BY-SA 4.0](https://creativecommo
 - [Cows in Switzerland looking into the camera](https://commons.wikimedia.org/wiki/File:Cows_in_Switzerland_looking_into_the_camera.jpg) by Jonas Eppler
 
 I cut out the backgrounds, resized the cows, and placed them on the wallpaper. The cut-outs in `assets/cows/`, the cow avatar and the composite wallpaper are adaptations of these photos and are shared under the same CC BY-SA 4.0 license.
+
+Cow sounds: [Cow moos #2](https://bigsoundbank.com/cow-moos-2-s2382.html), [#3](https://bigsoundbank.com/cow-moos-3-s2383.html), [#5](https://bigsoundbank.com/cow-moos-5-s2385.html) and [#6](https://bigsoundbank.com/cow-moos-6-s2386.html) by Joseph Sardin, from [BigSoundBank](https://bigsoundbank.com), released under CC0 (public domain). I faded the edges, evened out the volume and compressed them (`assets/sounds/`).

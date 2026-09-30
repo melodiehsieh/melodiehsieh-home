@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Melodie Hsieh</title>
+<meta name="description" content="Melodie Hsieh: data, running, and small projects. Click a cow.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mask:url(%%SKYMASK%%);
+  /* time of day: set from the slider by the script at the bottom */
+  --tint:rgb(255,255,255);--g1:rgb(47,120,210);--g2:rgb(90,165,236);--g3:rgb(184,216,245);--gop:0;
+  --card:rgba(255,255,255,.88);--ink:#10233d;--ink2:#3b6fb0;--chip:#e4f0ff;
+}
+body.dark .cow::before{background:radial-gradient(closest-side,rgba(150,180,255,.3),transparent)}
+body.dark{--card:rgba(14,22,50,.88);--ink:#eaf1ff;--ink2:#9dc0ff;--chip:rgba(255,255,255,.14)}
+*{box-sizing:border-box;margin:0}html,body{height:100%}img{max-width:100%}a{color:inherit}
+body{font:16px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;background:#3b86e0}
+
+/* ---------- the scene ----------
+   Sized like background-size:cover and anchored bottom-centre, so everything placed in % (cows, click targets, sky) stays on the right spot at any screen size. */
+.stage{position:fixed;left:50%;bottom:0;width:max(100vw,150vh);height:max(66.667vw,100vh);transform:translateX(-50%);background:url(%%WALL%%) center/100% 100% no-repeat;overflow:hidden}
+.stage>*{position:absolute}
+.sky-color,.skyfx{inset:0;pointer-events:none;-webkit-mask-image:var(--mask);mask-image:var(--mask);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.sky-color{background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 26%,var(--g3) 40%);mix-blend-mode:color;opacity:var(--gop)}
+.tint{inset:0;background:var(--tint);mix-blend-mode:multiply;pointer-events:none}
+.skyfx>*{position:absolute}
+.stars{inset:0;background-size:100% 100%;opacity:0;animation:twinkle 5s ease-in-out infinite alternate}
+@keyframes twinkle{from{filter:brightness(.75)}to{filter:brightness(1.3)}}
+.sun{left:13%;top:30%;width:9%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);opacity:0;background:radial-gradient(circle,#fffbe0 0 24%,#ffd36b 42%,rgba(255,150,60,.55) 60%,transparent 72%)}
+.moonwrap{position:fixed;inset:0;z-index:2;pointer-events:none;-webkit-mask-image:var(--mask);mask-image:var(--mask);-webkit-mask-size:max(100vw,150vh) max(66.667vw,100vh);mask-size:max(100vw,150vh) max(66.667vw,100vh);-webkit-mask-position:center bottom;mask-position:center bottom;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.moon{position:absolute;right:clamp(14px,4.5vw,72px);top:0;width:clamp(44px,5.2vw,72px);aspect-ratio:1;border-radius:50%;opacity:0;background:radial-gradient(circle at 35% 35%,#fff,#e8edff 55%,#b7c2e6);box-shadow:0 0 40px 12px rgba(190,205,255,.35)}
+
+/* ---------- cows: each one is its own image so it can hop ---------- */
+.pen .sprite{position:absolute;inset:0;width:100%;height:100%;display:block;transform-origin:50% 100%}
+.pen .shadow{position:absolute;left:-8%;right:-8%;bottom:-4%;height:12%;border-radius:50%;background:radial-gradient(closest-side,rgba(6,34,0,.55),transparent);transition:transform .2s}
+.sprite.hop{animation:hop .6s cubic-bezier(.3,.6,.4,1)}
+.pen.hopping .shadow{animation:shadowhop .6s cubic-bezier(.3,.6,.4,1)}
+@keyframes hop{
+  0%{transform:translateY(0) scale(1,1)}
+  14%{transform:translateY(0) scale(1.07,.9)}
+  45%{transform:translateY(-24%) scale(.96,1.06) rotate(-2deg)}
+  72%{transform:translateY(0) scale(1.05,.93)}
+  86%{transform:translateY(-5%) scale(.99,1.02) rotate(1deg)}
+  100%{transform:translateY(0) scale(1,1)}}
+@keyframes shadowhop{0%,14%,72%,100%{transform:scale(1)}45%{transform:scale(.7);opacity:.6}}
+
+/* ---------- click targets, labels, and the MOO! bubble ---------- */
+.cow{background:none;border:0;cursor:pointer;padding:0}
+.cow::before{content:"";position:absolute;inset:-8% -14%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.55),transparent);opacity:0;transition:opacity .2s}
+.cow:hover::before,.cow.on::before{opacity:1}
+.tag{position:absolute;left:50%;bottom:104%;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.15;background:#fff;color:#10233d;border:2px solid #10233d;border-radius:18px;padding:3px 12px;font:600 15px Fredoka;box-shadow:0 3px 0 rgba(16,35,61,.35);transition:.15s}
+.tag::after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#10233d}
+.cow:hover .tag,.cow:focus-visible .tag,.cow.on .tag{background:#ffd84d;transform:translateX(-50%) translateY(-4px)}
+.cow:focus-visible{outline:3px solid #ffd84d;outline-offset:2px;border-radius:14px}
+.cow::after{content:"";position:absolute;inset:-8%}          /* a little extra click area around each cow */
+.cow.mooing .tag{opacity:0}
+/* The bubble's tail tip sits on the cow's mouth (--mx/--my are set per cow); .r opens to the right, .l to the left. */
+.moo{position:absolute;left:var(--mx);top:var(--my);z-index:2;pointer-events:none;white-space:nowrap;font:700 28px/1 Fredoka;color:#10233d;background:#fff;border:3px solid #10233d;border-radius:20px;padding:5px 15px;box-shadow:0 4px 0 rgba(16,35,61,.35);transform:var(--base);transform-origin:var(--tip) 100%;animation:moo 1.8s ease-out forwards}
+.moo.r{--base:translate(-27px,calc(-100% - 12px));--tip:27px}
+.moo.l{--base:translate(calc(-100% + 27px),calc(-100% - 12px));--tip:calc(100% - 27px)}
+.moo::after{content:"";position:absolute;top:100%;border:9px solid transparent;border-top-color:#10233d}
+.moo.r::after{left:15px}.moo.l::after{right:15px}
+@keyframes moo{
+  0%{opacity:0;transform:var(--base) scale(.3)}
+  9%{opacity:1;transform:var(--base) scale(1.15) rotate(-3deg)}
+  16%{transform:var(--base) rotate(-8deg)}
+  24%{transform:var(--base) rotate(8deg)}
+  32%{transform:var(--base) rotate(-7deg)}
+  40%{transform:var(--base) rotate(6deg)}
+  48%{transform:var(--base) rotate(-3deg)}
+  56%{transform:var(--base) rotate(0)}
+  78%{opacity:1;transform:var(--base) scale(1)}
+  100%{opacity:0;transform:var(--base) translateY(-14px) scale(.92)}}
+
+/* ---------- top bar, time-of-day slider, cards ---------- */
+.nav{position:fixed;z-index:5;top:14px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.brand{font:600 20px Fredoka;color:#fff;text-shadow:0 2px 10px rgba(10,40,90,.5)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:600 14px Fredoka;border:2px solid #fff;background:rgba(255,255,255,.22);color:#fff;border-radius:999px;padding:3px 14px;cursor:pointer;backdrop-filter:blur(6px)}
+.chip:hover,.chip.on{background:#fff;color:#10233d}
+
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.ctrls{display:flex;align-items:center;gap:8px}
+.mute{width:26px;height:26px;display:grid;place-items:center;padding:0;cursor:pointer;color:#fff;border:2px solid #fff;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:50%}
+.mute:hover{background:#fff;color:#10233d}.mute:focus-visible{outline:3px solid #ffd84d;outline-offset:3px}
+.mute .slash{display:none}.mute[aria-pressed="true"] .slash{display:block}.mute[aria-pressed="true"] .waves{display:none}
+.tod{display:flex;align-items:center;gap:8px;border:2px solid #fff;background:rgba(255,255,255,.22);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:999px;padding:2px 12px;color:#fff}
+.tod .i{font-size:15px;line-height:1;text-shadow:0 1px 4px rgba(10,40,90,.5)}
+.tod input{-webkit-appearance:none;appearance:none;width:96px;height:5px;border-radius:999px;outline:none;cursor:pointer;background:rgba(255,255,255,.7)}
+.tod input::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:#fff;border:2px solid #10233d;box-shadow:0 1px 4px rgba(0,0,0,.35)}
+.tod input::-moz-range-thumb{width:11px;height:11px;border-radius:50%;background:#fff;border:2px solid #10233d}
+.tod input:focus-visible{outline:3px solid #ffd84d;outline-offset:4px}
+
+.card{position:fixed;z-index:4;top:64px;left:50%;transform:translateX(-50%);width:min(780px,calc(100vw - 32px));max-height:min(450px,calc(100vh - 290px));overflow:auto;background:var(--card);color:var(--ink);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:14px;padding:22px 28px;box-shadow:0 26px 60px rgba(10,40,90,.35);animation:pop .28s ease-out;transition:background .4s,color .4s}
+@keyframes pop{from{opacity:0;transform:translateX(-50%) translateY(12px)}}
+.panel[hidden]{display:none}
+h1{font:600 clamp(30px,5vw,46px)/1.05 Fredoka}h2{font:600 28px/1.1 Fredoka}
+.cowlink{color:var(--ink2);font-weight:800;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.cowlink:hover,.cowlink:focus-visible{color:var(--ink);text-decoration-thickness:2px}
+.cta{font:500 clamp(20px,2.9vw,28px)/1.2 Fredoka;color:var(--ink2);margin-top:10px}
+.sub{font:800 15px Nunito;color:var(--ink2);margin:2px 0 10px;letter-spacing:.03em}
+.about{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:start}
+.pic{width:150px;aspect-ratio:4/5;border-radius:10px;object-fit:cover;border:4px solid #fff;box-shadow:0 8px 20px rgba(10,40,90,.3);transform:rotate(-2deg)}
+ul.tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:10px 0}
+li.sk,li.tag{background:var(--chip);border-radius:999px;padding:2px 12px;font-weight:600;font-size:14px}
+.pill{display:inline-block;background:#10233d;color:#fff;border-radius:999px;padding:6px 16px;font:600 14px Fredoka;text-decoration:none;margin:6px 6px 0 0}
+.pill.l{background:var(--chip);color:var(--ink)}
+body.dark .pill:not(.l){background:#eaf1ff;color:#10233d}
+.proj{display:grid;grid-template-columns:1fr 290px;gap:22px;align-items:start}
+.proj img{border-radius:8px;box-shadow:0 8px 20px rgba(10,40,90,.3);width:100%}
+ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
+@media(max-width:700px){.about,.proj{grid-template-columns:1fr}.pic{width:110px}.card{padding:18px;max-height:calc(100vh - 290px)}}
+@media(prefers-reduced-motion:reduce){.card,.stars{animation:none}.sprite.hop,.pen.hopping .shadow{animation:none}.moo{animation:mooFade 1.6s ease-out forwards}@keyframes mooFade{0%{opacity:0}15%,75%{opacity:1}100%{opacity:0}}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="sky-color"></div>
+  %%PENS%%
+  <div class="tint"></div>
+  <div class="skyfx"><i class="stars" id="stars"></i><i class="sun" id="sun"></i></div>
+  %%HOT%%
+</div>
+<!-- Outside the scene on purpose so it is never cropped, but clipped by the same hill outline so it rises from behind the ridge. -->
+<div class="moonwrap"><i class="moon" id="moon"></i></div>
+
+<header class="nav">
+  <span class="brand">melodiehsieh.com</span>
+  <div class="right">
+    <div class="chips">
+      <button class="chip" data-k="about">About</button>
+      <button class="chip" data-k="now">Lately...</button>
+      <button class="chip" data-k="work">Personal Project</button>
+      <button class="chip" data-k="hi">Say hi</button>
+    </div>
+    <div class="ctrls">
+      <button class="mute" id="mute" type="button" aria-pressed="false" aria-label="Mute cow sounds" title="Mute cow sounds">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path d="M3 9v6h4l5 4V5L7 9H3z" fill="currentColor"/><path class="waves" d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><path class="slash" d="M4 4l16 16" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </button>
+      <div class="tod">
+        <span class="i" aria-hidden="true">&#9728;</span>
+        <input id="tod" type="range" min="0" max="100" value="0" step="1" aria-label="Time of day">
+        <span class="i" aria-hidden="true">&#9790;</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<article class="card" id="card">
+  <section class="panel" id="p-about"><div class="about"><img class="pic" src="%%ME%%" alt="Melodie Hsieh"><div><h1>HELLO!</h1><p style="margin-top:8px">%%BIO%%</p><p class="cta">Click on the cows to get started</p>%%LINKS%%</div></div></section>
+  <section class="panel" id="p-now" hidden><h2>Lately I've been...</h2><ul class="now">%%NOW%%</ul></section>
+  <section class="panel" id="p-work" hidden><div class="proj"><div><h2>Personal Project</h2><p class="sub">CUSTOM FITNESS TRACKING</p><p>%%DESC%%</p>%%PROJ%%</div><img src="%%SHOT%%" alt="Activity Tracking dashboard: September 2026 workout calendar"></div></section>
+  <section class="panel" id="p-hi" hidden><h2>Say hi</h2><p style="font-size:20px;margin:8px 0"><a class="cowlink" href="mailto:%%EMAIL%%">%%EMAIL%%</a></p>%%LINKS%%</section>
+</article>
+
+<script>
+/* ---- cards, hop, MOO! ---- */
+const hs=[...document.querySelectorAll('[data-k]')],ps=[...document.querySelectorAll('.panel')],card=document.getElementById('card');
+function show(k){hs.forEach(e=>e.classList.toggle('on',e.dataset.k===k));ps.forEach(p=>p.hidden=p.id!=='p-'+k);card.style.animation='none';card.offsetWidth;card.style.animation='';card.scrollTop=0}
+const SOUNDS=%%SOUNDS%%,audio={};
+Object.keys(SOUNDS).forEach(k=>{const a=new Audio(SOUNDS[k]);a.preload='auto';a.volume=.85;audio[k]=a});
+let muted=false;try{muted=localStorage.getItem('moo-muted')==='1'}catch(e){}
+const muteBtn=document.getElementById('mute');
+function setMuted(m){muted=m;muteBtn.setAttribute('aria-pressed',m);const l=m?'Unmute cow sounds':'Mute cow sounds';muteBtn.setAttribute('aria-label',l);muteBtn.title=l;
+  if(m)Object.values(audio).forEach(a=>a.pause());try{localStorage.setItem('moo-muted',m?'1':'0')}catch(e){}}
+muteBtn.addEventListener('click',()=>setMuted(!muted));setMuted(muted);
+function mooSound(k){const a=audio[k];if(!a||muted)return;try{a.currentTime=0}catch(e){}const p=a.play();if(p&&p.catch)p.catch(()=>{})}   /* only ever called from a click, so browsers allow it */
+function moo(k){
+  const cow=document.querySelector('.cow[data-k="'+k+'"]'),pen=document.querySelector('.pen[data-k="'+k+'"]');if(!cow||!pen)return;mooSound(k);
+  const sp=pen.querySelector('.sprite');sp.classList.remove('hop');pen.classList.remove('hopping');void sp.offsetWidth;sp.classList.add('hop');pen.classList.add('hopping');
+  sp.onanimationend=()=>{sp.classList.remove('hop');pen.classList.remove('hopping')};
+  cow.querySelectorAll('.moo').forEach(m=>m.remove());
+  const b=document.createElement('span');b.className='moo '+(cow.dataset.face||'r');b.textContent='MOO!';b.setAttribute('aria-hidden','true');cow.classList.add('mooing');cow.appendChild(b);b.onanimationend=()=>{b.remove();cow.classList.remove('mooing')};
+}
+hs.forEach(e=>e.addEventListener('click',()=>{show(e.dataset.k);moo(e.dataset.k)}));show('about');
+/* a link in the text that sends the visitor to a cow, same as clicking that cow */
+document.querySelectorAll('[data-go]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();show(a.dataset.go);moo(a.dataset.go)}));
+
+/* ---- time of day: 0 = day, 50 = sunset, 100 = night ---- */
+const root=document.documentElement,sun=document.getElementById('sun'),moon=document.getElementById('moon'),stars=document.getElementById('stars'),
+      slider=document.getElementById('tod');
+const P={tint:[[255,255,255],[255,190,140],[62,82,152]],g1:[[47,120,210],[58,70,150],[8,14,50]],g2:[[90,165,236],[214,96,122],[18,28,86]],g3:[[184,216,245],[255,176,80],[40,58,120]],gop:[[0],[.92],[.96]]};
+const mix=(a,b,u)=>a.map((v,i)=>v+(b[i]-v)*u),at=(k,t)=>t<=.5?mix(P[k][0],P[k][1],t/.5):mix(P[k][1],P[k][2],(t-.5)/.5);
+const rgb=c=>'rgb('+c.map(Math.round).join(',')+')',sm=(a,b,x)=>{x=Math.min(1,Math.max(0,(x-a)/(b-a)));return x*x*(3-2*x)};
+let lastT=0;
+const CREST=%%CREST%%;   // height of the hill's ridge (fraction of the scene, from the top), sampled evenly across it
+function crestAt(fx){fx=Math.min(.999,Math.max(0,fx));const p=fx*CREST.length-.5,i=Math.max(0,Math.min(CREST.length-2,Math.floor(p))),u=Math.min(1,Math.max(0,p-i));return CREST[i]*(1-u)+CREST[i+1]*u}
+function placeMoon(){
+  /* The scene is sized like background-size:cover, so work out where the ridge sits on screen at the moon's x position. */
+  const vw=innerWidth,vh=innerHeight,sw=Math.max(vw,1.5*vh),sh=Math.max(vw/1.5,vh),r=moon.getBoundingClientRect();
+  const ridge=vh-sh+crestAt((r.left+r.width/2-(vw-sw)/2)/sw)*sh;   // y of the ridge under the moon
+  const hidden=ridge+4,resting=Math.max(.14*vh,112);                 // start just behind the hill, end a little higher than before, clear of the slider
+  const u=sm(.6,1,lastT);
+  moon.style.top=(hidden+(resting-hidden)*u).toFixed(1)+'px';moon.style.opacity=sm(.58,.64,lastT).toFixed(3);
+}
+addEventListener('resize',placeMoon);
+function setTime(v){
+  const t=v/100;
+  root.style.setProperty('--tint',rgb(at('tint',t)));root.style.setProperty('--g1',rgb(at('g1',t)));root.style.setProperty('--g2',rgb(at('g2',t)));root.style.setProperty('--g3',rgb(at('g3',t)));
+  root.style.setProperty('--gop',at('gop',t)[0].toFixed(3));
+  sun.style.top=(t<=.5?8+(t/.5)*26:34+((t-.5)/.18)*18)+'%';sun.style.opacity=(sm(0,.25,t)*(1-sm(.56,.72,t))).toFixed(3);
+  lastT=t;placeMoon();
+  stars.style.opacity=(sm(.6,.88,t)*.95).toFixed(3);
+  document.body.classList.toggle('dark',t>.7);
+  slider.setAttribute('aria-valuetext',t<.25?'Day':t<.72?'Sunset':'Night');
+}
+slider.addEventListener('input',()=>setTime(+slider.value));setTime(+slider.value);
+
+/* stars: a fixed pattern (seeded), drawn once */
+(function(){const c=document.createElement('canvas');c.width=1200;c.height=800;const x=c.getContext('2d');let s=7;const r=()=>(s=(s*16807)%2147483647)/2147483647;
+  for(let i=0;i<260;i++){const px=r()*1200,py=r()*420,rad=.5+r()*1.4;x.fillStyle='rgba(255,255,255,'+(.4+r()*.6).toFixed(2)+')';x.beginPath();x.arc(px,py,rad,0,6.283);x.fill()}
+  stars.style.backgroundImage='url('+c.toDataURL()+')'})();
+</script>
+</body>
+</html>

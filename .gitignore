@@ -1,13 +1,13 @@
 # Allowlist: only the files below are tracked. Everything else in this folder
-# (design explorations, unlicensed source photos, scratch images) stays local.
+# (mockups/, archive/ and any scratch files) stays local.
 *
 !.gitignore
 !README.md
-!template.html
-!build_homepage.py
-!make_wallpaper.py
+!src/
+!src/**
 !assets/
 !assets/**
 !dist/
 !dist/index.html
+!dist/Hsieh_Melodie.pdf
 .DS_Store
