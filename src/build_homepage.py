@@ -19,9 +19,10 @@ def li(items, cls=""):
 
 # ---- content (edit these) ----
 BIO = ("I'm Melodie. I love spending time outdoors, cooking, and running medium distances very slowly. I also enjoy working with data - check out this <a href=\"#work\" class=\"cowlink\" data-go=\"work\">Custom Fitness Tracking App</a> I built to model and analyze my personal health and activity data!")
-DESC = ("Apple's Health and Activity apps don't show the stats I am curious about, so I built my own. "
-        "I exported 5.6 million lines of raw XML Health data, parsed it into Parquet, and charted pace on repeat routes, "
-        "pace by heart-rate zone, workout type distribution with custom categories, and gym PRs.")
+DESC = ("Apple's Health and Activity apps don't show the stats I want to see, so I built my own custom app. "
+        "I exported 5.6 million lines of raw XML Health data, parsed it into Parquet, and charted things like heatmaps of "
+        "workout volume/type, pace on repeat routes, pace by heart-rate zone, workout type distribution with custom categories, "
+        "gym PRs, and other stats exactly how I want to see them!")
 NOW = ["Studying cake decorating techniques and whipped cream stabilization methods",
        "Conducting fun analyses of my health and fitness data",
        "Learning to play tennis with no coach but big dreams"]
@@ -41,7 +42,9 @@ COWS = [("A", "about", "About", (.51, .54), "r"),
 boxes = json.load(open("assets/cows.json"))
 def place(c):
     b = boxes[c]
-    return f'left:{b["l"]:.2f}%;top:{b["t"]:.2f}%;width:{b["w"]:.2f}%;height:{b["h"]:.2f}%'
+    # --l/--t place the cow on wide screens, --ml/--mt on portrait (phone) screens; see the CSS
+    return (f'--l:{b["l"]:.2f}%;--t:{b["t"]:.2f}%;--ml:{b["ml"]:.2f}%;--mt:{b["mt"]:.2f}%;'
+            f'width:{b["w"]:.2f}%;height:{b["h"]:.2f}%')
 pens = "".join(
     f'<div class="pen" data-k="{k}" style="{place(c)}"><i class="shadow"></i>'
     f'<img class="sprite" alt="" src="{file_uri(f"assets/sprites/{c}.webp", "image/webp")}"></div>' for c, k, label, mouth, face in COWS)

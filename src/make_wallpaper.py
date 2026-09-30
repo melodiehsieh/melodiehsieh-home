@@ -53,15 +53,20 @@ def feather(im, bottom, left):                      # melt the cow's feet (and a
 # Spread across the field: near cow on the left, far cows in the middle, a nearer one on the right.
 COWS = {
     "A": ("cutA.png", 340, 125, 1262, None, .06, 0),                 # big front-on cow, nearest (About)
-    "E": ("cutE.png", 100, 690, 1040, None, .14, .22),               # resting brown/white cow (Personal Project)
+    "E": ("cutE.png", 100, 690, 1040, None, .14, .32),               # resting brown/white cow (Personal Project)
     "B": ("cutB.png", 108, 1200, 950, (0, .43, .36, 1), .08, 0),     # small standing cow, far (Now)
-    "D": ("cutD.png", 140, 1693, 1150, None, .14, .30),              # resting black/white cow (Say hi)
+    "D": ("cutD.png", 140, 1693, 1150, None, .14, .55),              # resting black/white cow (Say hi)
 }
+# Portrait (phone) arrangement: a phone shows only ~600px of the 2000px-wide scene, centred on x=1000, so the cows are
+# bunched into that strip and staggered by depth: name: (left x, y of the feet).
+MOBILE = {"A": (1000, 1290), "E": (800, 900), "B": (1130, 850), "D": (760, 1080)}
 boxes = {}
 for name, (file, height, x, feet, trim, fb, fl) in COWS.items():
     im = load(f"assets/cows/{file}", trim)
     im = im.resize((round(im.width * height / im.height), height), Image.LANCZOS)
     feather(im, fb, fl).save(f"assets/sprites/{name}.webp", "WEBP", quality=86, method=6)
     boxes[name] = dict(l=round(x / 20, 3), t=round((feet - height) / 13.33, 3), w=round(im.width / 20, 3), h=round(height / 13.33, 3))
+for name, (x, feet) in MOBILE.items():
+    boxes[name]["ml"] = round(x / 20, 3); boxes[name]["mt"] = round((feet - COWS[name][1]) / 13.33, 3)
 json.dump(boxes, open("assets/cows.json", "w"), indent=1)
 print("ok", boxes)

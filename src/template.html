@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Melodie Hsieh</title>
+<meta name="theme-color" content="#3b86e0">
 <meta name="description" content="Melodie Hsieh: data, running, and small projects. Click a cow.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
@@ -21,8 +22,10 @@ body{font:16px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;
 
 /* ---------- the scene ----------
    Sized like background-size:cover and anchored bottom-centre, so everything placed in % (cows, click targets, sky) stays on the right spot at any screen size. */
-.stage{position:fixed;left:50%;bottom:0;width:max(100vw,150vh);height:max(66.667vw,100vh);transform:translateX(-50%);background:url(%%WALL%%) center/100% 100% no-repeat;overflow:hidden}
+.stage{position:fixed;left:50%;bottom:0;width:max(100vw,150vh);width:max(100vw,150dvh);height:max(66.667vw,100vh);height:max(66.667vw,100dvh);transform:translateX(-50%);background:url(%%WALL%%) center/100% 100% no-repeat;overflow:hidden}
 .stage>*{position:absolute}
+.pen,.cow{left:var(--l);top:var(--t)}
+@media(max-aspect-ratio:1/1){.pen,.cow{left:var(--ml);top:var(--mt)}}   /* portrait: the phone arrangement */
 .sky-color,.skyfx{inset:0;pointer-events:none;-webkit-mask-image:var(--mask);mask-image:var(--mask);-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .sky-color{background:linear-gradient(180deg,var(--g1) 0%,var(--g2) 26%,var(--g3) 40%);mix-blend-mode:color;opacity:var(--gop)}
 .tint{inset:0;background:var(--tint);mix-blend-mode:multiply;pointer-events:none}
@@ -30,7 +33,7 @@ body{font:16px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;
 .stars{inset:0;background-size:100% 100%;opacity:0;animation:twinkle 5s ease-in-out infinite alternate}
 @keyframes twinkle{from{filter:brightness(.75)}to{filter:brightness(1.3)}}
 .sun{left:13%;top:30%;width:9%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);opacity:0;background:radial-gradient(circle,#fffbe0 0 24%,#ffd36b 42%,rgba(255,150,60,.55) 60%,transparent 72%)}
-.moonwrap{position:fixed;inset:0;z-index:2;pointer-events:none;-webkit-mask-image:var(--mask);mask-image:var(--mask);-webkit-mask-size:max(100vw,150vh) max(66.667vw,100vh);mask-size:max(100vw,150vh) max(66.667vw,100vh);-webkit-mask-position:center bottom;mask-position:center bottom;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
+.moonwrap{position:fixed;inset:0;z-index:2;pointer-events:none;-webkit-mask-image:var(--mask);mask-image:var(--mask);-webkit-mask-size:max(100vw,150vh) max(66.667vw,100vh);mask-size:max(100vw,150vh) max(66.667vw,100vh);-webkit-mask-size:max(100vw,150dvh) max(66.667vw,100dvh);mask-size:max(100vw,150dvh) max(66.667vw,100dvh);-webkit-mask-position:center bottom;mask-position:center bottom;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
 .moon{position:absolute;right:clamp(14px,4.5vw,72px);top:0;width:clamp(44px,5.2vw,72px);aspect-ratio:1;border-radius:50%;opacity:0;background:radial-gradient(circle at 35% 35%,#fff,#e8edff 55%,#b7c2e6);box-shadow:0 0 40px 12px rgba(190,205,255,.35)}
 
 /* ---------- cows: each one is its own image so it can hop ---------- */
@@ -48,14 +51,14 @@ body{font:16px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;
 @keyframes shadowhop{0%,14%,72%,100%{transform:scale(1)}45%{transform:scale(.7);opacity:.6}}
 
 /* ---------- click targets, labels, and the MOO! bubble ---------- */
-.cow{background:none;border:0;cursor:pointer;padding:0}
+.cow{background:none;border:0;cursor:pointer;padding:0;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .cow::before{content:"";position:absolute;inset:-8% -14%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.55),transparent);opacity:0;transition:opacity .2s}
 .cow:hover::before,.cow.on::before{opacity:1}
 .tag{position:absolute;left:50%;bottom:104%;transform:translateX(-50%);white-space:nowrap;text-align:center;line-height:1.15;background:#fff;color:#10233d;border:2px solid #10233d;border-radius:18px;padding:3px 12px;font:600 15px Fredoka;box-shadow:0 3px 0 rgba(16,35,61,.35);transition:.15s}
 .tag::after{content:"";position:absolute;left:50%;top:100%;margin-left:-6px;border:6px solid transparent;border-top-color:#10233d}
 .cow:hover .tag,.cow:focus-visible .tag,.cow.on .tag{background:#ffd84d;transform:translateX(-50%) translateY(-4px)}
 .cow:focus-visible{outline:3px solid #ffd84d;outline-offset:2px;border-radius:14px}
-.cow::after{content:"";position:absolute;inset:-8%}          /* a little extra click area around each cow */
+.cow::after{content:"";position:absolute;inset:-14px}          /* a little extra click area around each cow */
 .cow.mooing .tag{opacity:0}
 /* The bubble's tail tip sits on the cow's mouth (--mx/--my are set per cow); .r opens to the right, .l to the left. */
 .moo{position:absolute;left:var(--mx);top:var(--my);z-index:2;pointer-events:none;white-space:nowrap;font:700 28px/1 Fredoka;color:#10233d;background:#fff;border:3px solid #10233d;border-radius:20px;padding:5px 15px;box-shadow:0 4px 0 rgba(16,35,61,.35);transform:var(--base);transform-origin:var(--tip) 100%;animation:moo 1.8s ease-out forwards}
@@ -79,7 +82,7 @@ body{font:16px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;
 .nav{position:fixed;z-index:5;top:14px;left:18px;right:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .brand{font:600 20px Fredoka;color:#fff;text-shadow:0 2px 10px rgba(10,40,90,.5)}
 .chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{font:600 14px Fredoka;border:2px solid #fff;background:rgba(255,255,255,.22);color:#fff;border-radius:999px;padding:3px 14px;cursor:pointer;backdrop-filter:blur(6px)}
+.chip{touch-action:manipulation;font:600 14px Fredoka;border:2px solid #fff;background:rgba(255,255,255,.22);color:#fff;border-radius:999px;padding:3px 14px;cursor:pointer;backdrop-filter:blur(6px)}
 .chip:hover,.chip.on{background:#fff;color:#10233d}
 
 .right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
@@ -112,7 +115,34 @@ body.dark .pill:not(.l){background:#eaf1ff;color:#10233d}
 .proj{display:grid;grid-template-columns:1fr 290px;gap:22px;align-items:start}
 .proj img{border-radius:8px;box-shadow:0 8px 20px rgba(10,40,90,.3);width:100%}
 ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
-@media(max-width:700px){.about,.proj{grid-template-columns:1fr}.pic{width:110px}.card{padding:18px;max-height:calc(100vh - 290px)}}
+@media(max-width:700px){
+  .nav{top:10px;left:12px;right:12px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px}
+  .right{display:contents}
+  .brand{grid-column:1;grid-row:1;font-size:17px}
+  .ctrls{grid-column:2;grid-row:1}
+  .chips{grid-column:1 / -1;grid-row:2;flex-wrap:nowrap;justify-content:space-between;gap:4px}
+  .chip{font-size:12.5px;padding:4px 8px;white-space:nowrap}
+  .card{top:126px;width:calc(100vw - 24px);max-height:max(200px,calc(52vh - 126px));padding:16px 18px}
+  .card p{font-size:14px;line-height:1.4}
+  h1{font-size:30px}h2{font-size:24px}
+  .about{grid-template-columns:76px 1fr;column-gap:12px;row-gap:6px}
+  .about>div{display:contents}
+  .pic{width:76px;border-width:3px;grid-column:1;grid-row:1 / span 2}
+  .about h1{grid-column:2;grid-row:1;align-self:end}
+  .about .cta{grid-column:2;grid-row:2;align-self:start;margin:0;font-size:18px}
+  .about .bio{grid-column:1 / -1;grid-row:3;margin:0}
+  .about .pills{grid-column:1 / -1;grid-row:4}
+  .pill{font-size:13px;padding:5px 12px;margin:4px 6px 0 0}
+  .proj{grid-template-columns:1fr;gap:10px}
+  .proj img{max-height:140px;object-fit:cover;object-position:top}
+  ul.now li{font-size:15px;margin:6px 0}
+  .tag{font-size:12.5px;padding:2px 9px}
+  .moo{font-size:22px;padding:4px 12px}
+  .mute{width:30px;height:30px}
+}
+@media(max-width:400px){.chips{gap:3px}.chip{font-size:11.5px;padding:4px 6px}.brand{font-size:15px}}   /* small phones: four buttons must fit in one row */
+@media(max-height:560px) and (min-width:701px){.card{top:64px;max-height:calc(100vh - 76px)}}   /* phone held sideways */
+@media(pointer:coarse){.tod{padding:4px 14px}.tod input{height:8px}.tod input::-webkit-slider-thumb{width:24px;height:24px}.tod input::-moz-range-thumb{width:18px;height:18px}}
 @media(prefers-reduced-motion:reduce){.card,.stars{animation:none}.sprite.hop,.pen.hopping .shadow{animation:none}.moo{animation:mooFade 1.6s ease-out forwards}@keyframes mooFade{0%{opacity:0}15%,75%{opacity:1}100%{opacity:0}}}
 </style>
 </head>
@@ -132,8 +162,8 @@ ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
   <div class="right">
     <div class="chips">
       <button class="chip" data-k="about">About</button>
-      <button class="chip" data-k="now">Lately...</button>
       <button class="chip" data-k="work">Personal Project</button>
+      <button class="chip" data-k="now">Lately...</button>
       <button class="chip" data-k="hi">Say hi</button>
     </div>
     <div class="ctrls">
@@ -150,7 +180,7 @@ ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
 </header>
 
 <article class="card" id="card">
-  <section class="panel" id="p-about"><div class="about"><img class="pic" src="%%ME%%" alt="Melodie Hsieh"><div><h1>HELLO!</h1><p style="margin-top:8px">%%BIO%%</p><p class="cta">Click on the cows to get started</p>%%LINKS%%</div></div></section>
+  <section class="panel" id="p-about"><div class="about"><img class="pic" src="%%ME%%" alt="Melodie Hsieh"><div><h1>HELLO!</h1><p class="bio" style="margin-top:8px">%%BIO%%</p><p class="cta">Click on the cows to get started</p><div class="pills">%%LINKS%%</div></div></div></section>
   <section class="panel" id="p-now" hidden><h2>Lately I've been...</h2><ul class="now">%%NOW%%</ul></section>
   <section class="panel" id="p-work" hidden><div class="proj"><div><h2>Personal Project</h2><p class="sub">CUSTOM FITNESS TRACKING</p><p>%%DESC%%</p>%%PROJ%%</div><img src="%%SHOT%%" alt="Activity Tracking dashboard: September 2026 workout calendar"></div></section>
   <section class="panel" id="p-hi" hidden><h2>Say hi</h2><p style="font-size:20px;margin:8px 0"><a class="cowlink" href="mailto:%%EMAIL%%">%%EMAIL%%</a></p>%%LINKS%%</section>
@@ -192,11 +222,15 @@ function placeMoon(){
   /* The scene is sized like background-size:cover, so work out where the ridge sits on screen at the moon's x position. */
   const vw=innerWidth,vh=innerHeight,sw=Math.max(vw,1.5*vh),sh=Math.max(vw/1.5,vh),r=moon.getBoundingClientRect();
   const ridge=vh-sh+crestAt((r.left+r.width/2-(vw-sw)/2)/sw)*sh;   // y of the ridge under the moon
-  const hidden=ridge+4,resting=Math.max(.14*vh,112);                 // start just behind the hill, end a little higher than before, clear of the slider
+  const phone=matchMedia('(max-width:700px)').matches,hidden=ridge+4,resting=phone?80:Math.max(.14*vh,112);                 // start just behind the hill, end a little higher than before, clear of the slider
   const u=sm(.6,1,lastT);
   moon.style.top=(hidden+(resting-hidden)*u).toFixed(1)+'px';moon.style.opacity=sm(.58,.64,lastT).toFixed(3);
 }
 addEventListener('resize',placeMoon);
+function fitCows(){   /* nudge any cow that a narrow window would cut off at the edge back into view */
+  const els=[...document.querySelectorAll('.pen,.cow')];els.forEach(e=>e.style.marginLeft='');
+  els.forEach(e=>{const r=e.getBoundingClientRect(),pad=6;let d=0;if(r.left<pad)d=pad-r.left;else if(r.right>innerWidth-pad)d=innerWidth-pad-r.right;if(d)e.style.marginLeft=d+'px'})}
+addEventListener('resize',fitCows);fitCows();
 function setTime(v){
   const t=v/100;
   root.style.setProperty('--tint',rgb(at('tint',t)));root.style.setProperty('--g1',rgb(at('g1',t)));root.style.setProperty('--g2',rgb(at('g2',t)));root.style.setProperty('--g3',rgb(at('g3',t)));
