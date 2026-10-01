@@ -59,7 +59,7 @@ COWS = {
 }
 # Portrait (phone) arrangement: a phone shows only ~600px of the 2000px-wide scene, centred on x=1000, so the cows are
 # bunched into that strip and staggered by depth: name: (left x, y of the feet).
-MOBILE = {"A": (1000, 1290), "E": (800, 900), "B": (1130, 850), "D": (760, 1080)}
+MOBILE = {"A": (1000, 1300), "E": (800, 1010), "B": (1130, 930), "D": (760, 1150)}
 boxes = {}
 for name, (file, height, x, feet, trim, fb, fl) in COWS.items():
     im = load(f"assets/cows/{file}", trim)

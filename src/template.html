@@ -100,6 +100,11 @@ body{font:16px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);overflow:hidden;
 .card{position:fixed;z-index:4;top:64px;left:50%;transform:translateX(-50%);width:min(780px,calc(100vw - 32px));max-height:min(450px,calc(100vh - 290px));overflow:auto;background:var(--card);color:var(--ink);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:14px;padding:22px 28px;box-shadow:0 26px 60px rgba(10,40,90,.35);animation:pop .28s ease-out;transition:background .4s,color .4s}
 @keyframes pop{from{opacity:0;transform:translateX(-50%) translateY(12px)}}
 .panel[hidden]{display:none}
+.card.closed{display:none}
+.xs{position:sticky;top:0;height:0;z-index:3}
+.x{position:absolute;right:-22px;top:-18px;width:26px;height:26px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:rgba(16,35,61,.1);color:var(--ink);font:500 20px/1 Fredoka;cursor:pointer;touch-action:manipulation}
+.x:hover{background:rgba(16,35,61,.22)}.x:focus-visible{outline:3px solid #ffd84d;outline-offset:2px}
+body.dark .x{background:rgba(255,255,255,.16)}
 h1{font:600 clamp(30px,5vw,46px)/1.05 Fredoka}h2{font:600 28px/1.1 Fredoka}
 .cowlink{color:var(--ink2);font-weight:800;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .cowlink:hover,.cowlink:focus-visible{color:var(--ink);text-decoration-thickness:2px}
@@ -122,7 +127,8 @@ ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
   .ctrls{grid-column:2;grid-row:1}
   .chips{grid-column:1 / -1;grid-row:2;flex-wrap:nowrap;justify-content:space-between;gap:4px}
   .chip{font-size:12.5px;padding:4px 8px;white-space:nowrap}
-  .card{top:126px;width:calc(100vw - 24px);max-height:max(200px,calc(52vh - 126px));padding:16px 18px}
+  .card{top:126px;width:calc(100vw - 24px);max-height:var(--cardmax,max(200px,calc(52vh - 126px)));max-height:var(--cardmax,max(200px,calc(52dvh - 126px)));padding:16px 18px}
+  .x{right:-10px;top:-8px;width:28px;height:28px}
   .card p{font-size:14px;line-height:1.4}
   h1{font-size:30px}h2{font-size:24px}
   .about{grid-template-columns:76px 1fr;column-gap:12px;row-gap:6px}
@@ -180,6 +186,7 @@ ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
 </header>
 
 <article class="card" id="card">
+  <div class="xs"><button class="x" id="closeCard" type="button" aria-label="Close">&times;</button></div>
   <section class="panel" id="p-about"><div class="about"><img class="pic" src="%%ME%%" alt="Melodie Hsieh"><div><h1>HELLO!</h1><p class="bio" style="margin-top:8px">%%BIO%%</p><p class="cta">Click on the cows to get started</p><div class="pills">%%LINKS%%</div></div></div></section>
   <section class="panel" id="p-now" hidden><h2>Lately I've been...</h2><ul class="now">%%NOW%%</ul></section>
   <section class="panel" id="p-work" hidden><div class="proj"><div><h2>Personal Project</h2><p class="sub">CUSTOM FITNESS TRACKING</p><p>%%DESC%%</p>%%PROJ%%</div><img src="%%SHOT%%" alt="Activity Tracking dashboard: September 2026 workout calendar"></div></section>
@@ -189,7 +196,10 @@ ul.now{padding-left:20px}ul.now li{margin:8px 0;font-size:17px}
 <script>
 /* ---- cards, hop, MOO! ---- */
 const hs=[...document.querySelectorAll('[data-k]')],ps=[...document.querySelectorAll('.panel')],card=document.getElementById('card');
-function show(k){hs.forEach(e=>e.classList.toggle('on',e.dataset.k===k));ps.forEach(p=>p.hidden=p.id!=='p-'+k);card.style.animation='none';card.offsetWidth;card.style.animation='';card.scrollTop=0}
+function closeCard(){card.classList.add('closed');hs.forEach(e=>e.classList.remove('on'))}
+document.getElementById('closeCard').addEventListener('click',closeCard);
+addEventListener('keydown',e=>{if(e.key==='Escape')closeCard()});
+function show(k){card.classList.remove('closed');hs.forEach(e=>e.classList.toggle('on',e.dataset.k===k));ps.forEach(p=>p.hidden=p.id!=='p-'+k);card.style.animation='none';card.offsetWidth;card.style.animation='';card.scrollTop=0}
 const SOUNDS=%%SOUNDS%%,audio={};
 Object.keys(SOUNDS).forEach(k=>{const a=new Audio(SOUNDS[k]);a.preload='auto';a.volume=.85;audio[k]=a});
 let muted=false;try{muted=localStorage.getItem('moo-muted')==='1'}catch(e){}
@@ -231,6 +241,12 @@ function fitCows(){   /* nudge any cow that a narrow window would cut off at the
   const els=[...document.querySelectorAll('.pen,.cow')];els.forEach(e=>e.style.marginLeft='');
   els.forEach(e=>{const r=e.getBoundingClientRect(),pad=6;let d=0;if(r.left<pad)d=pad-r.left;else if(r.right>innerWidth-pad)d=innerWidth-pad-r.right;if(d)e.style.marginLeft=d+'px'})}
 addEventListener('resize',fitCows);fitCows();
+function fitCard(){   /* phones: never let the card run down over the cows */
+  if(!matchMedia('(max-width:700px)').matches){card.style.removeProperty('--cardmax');return}
+  const tagTop=Math.min(...[...document.querySelectorAll('.cow .tag')].map(t=>t.getBoundingClientRect().top));
+  card.style.setProperty('--cardmax',Math.max(150,tagTop-parseFloat(getComputedStyle(card).top)-10)+'px');
+}
+addEventListener('resize',fitCard);fitCard();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitCard);
 function setTime(v){
   const t=v/100;
   root.style.setProperty('--tint',rgb(at('tint',t)));root.style.setProperty('--g1',rgb(at('g1',t)));root.style.setProperty('--g2',rgb(at('g2',t)));root.style.setProperty('--g3',rgb(at('g3',t)));
